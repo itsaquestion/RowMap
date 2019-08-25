@@ -16,10 +16,12 @@ rowMap = function(x, fun) {
   UseMethod("rowMap",x)
 }
 
+#' @export
 rowMap.default = function(x, fun) {
   setDT(as.data.frame(x))[, fun(.SD), by = seq_len(nrow(x))][, -1]
 }
 
+#' @export
 rowMap.xts = function(x, fun) {
   ii = zoo::index(x)
   dt = as.data.table(x)
@@ -27,11 +29,13 @@ rowMap.xts = function(x, fun) {
   as.xts.data.table(dt[, !"index"][, fun(.SD), by = seq_len(nrow(x))][, seq_len := ii])
 }
 
+#' @export
 rowMap.data.frame = function(x, fun) {
   assertDataFrame(x, min.rows=1, min.cols = 1)
   as.data.frame(as.data.table(x)[, fun(.SD), by = seq_len(nrow(x))][, !"seq_len"])
 }
 
+#' @export
 rowMap.data.table = function(x, fun) {
   assertDataFrame(x, min.rows=1, min.cols = 1)
   x[, fun(.SD), by = seq_len(nrow(x))][, !"seq_len"]
